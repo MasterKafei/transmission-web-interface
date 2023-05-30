@@ -1,0 +1,27 @@
+{% extends 'Layout/Public/base.html.twig' %}
+
+{% block sub_title %}
+    Accueil
+{% endblock sub_title %}
+
+{% block body %}
+    <h2 class="text-2xl font-bold">Bienvenue sur Transmission Web Interface</h2>
+
+    <p class="mt-4">Ce site web vous permet de gérer et contrôler votre client Transmission à distance.</p>
+
+    <p>Vous pouvez :</p>
+    <ul class="list-disc list-inside ml-4 mt-4">
+        <li class="flex items-center">
+            <i class="material-icons text-purple-700 mr-2">cloud_download</i>
+            <p>Télécharger des fichiers torrent et les ajouter à votre client Transmission</p>
+        </li>
+        <li class="flex items-center">
+            <i class="material-icons text-purple-700 mr-2">bar_chart</i>
+            <p>Surveiller les téléchargements en cours et les statistiques de votre client Transmission</p>
+        </li>
+        <li class="flex items-center">
+            <i class="material-icons text-purple-700 mr-2">settings</i>
+            <p>Gérer les paramètres et les préférences de votre client Transmission</p>
+        </li>
+    </ul>
+{% endblock body %}

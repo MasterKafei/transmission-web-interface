@@ -1,0 +1,48 @@
+{% extends 'Layout/Base/base.html.twig' %}
+
+{%- block title -%}
+    {%- block sub_title -%}{%- endblock sub_title %} - Transmission web interface
+{%- endblock title -%}
+
+{% block scripts %}
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock scripts %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+{% endblock stylesheets %}
+
+{% block body_html %}
+    <body class="flex flex-col min-h-screen bg-black">
+    <header class="navbar py-4 bg-slate-900 text-white">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center">
+                <img src="{{ asset('assets/images/logo.svg') }}" alt="MK Logo" class="w-10 h-10 text-white">
+                <span class="ml-2 text-lg font-semibold">Transmission Web Interface</span>
+            </div>
+            <div>
+                <a href="{{ path('app_home_index') }}" class="text-white hover:underline">Accueil</a>
+                {% if is_granted(constant('App\\Entity\\User::ROLE_USER')) %}
+                    <a href="{{ path('app_transmission_torrent_listing_list_all') }}" class="ml-4 text-white hover:underline">Torrents</a>
+                    <a href="{{ path('app_security_authentication_logout') }}" class="ml-4 text-white hover:underline">Déconnexion</a>
+                {% else %}
+                    <a href="{{ path('app_security_authentication_login') }}" class="ml-4 text-white hover:underline">Connexion</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto py-10 text-white">
+        {% block body %}
+
+        {% endblock body %}
+    </main>
+
+    <footer class="footer py-4 bg-slate-900 text-white">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">Créer avec &#10084; par <b>MasterKafey</b> Aka <b>Jean Marius</b></p>
+            <p class="text-sm">© 2023 Transmission Web Interface. Tous droits réservés.</p>
+        </div>
+    </footer>
+    </body>
+{% endblock body_html %}

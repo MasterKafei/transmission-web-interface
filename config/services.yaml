@@ -1,0 +1,38 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # EventListener
+
+    App\EventListener\Listener\Doctrine\User\UserListener:
+        tags:
+            - { name: 'doctrine.orm.entity_listener', event: prePersist, entity: App\Entity\User }
+
+
+    # Command
+
+    App\Command\UserCreateCommand:
+        arguments:
+            $defaultUsername: '%env(APP_DEFAULT_USERNAME)%'
+            $defaultPlainPassword: '%env(APP_DEFAULT_PLAIN_PASSWORD)%'
+
+    # Business
+    App\Business\TransmissionBusiness:
+        arguments:
+            $baseUri: '%env(TRANSMISSION_BASE_URI)%'
+            $username: '%env(TRANSMISSION_USERNAME)%'
+            $password: '%env(TRANSMISSION_PASSWORD)%'
+
+    App\Business\DoctrineBusiness:
+        arguments:
+            $migrationDirectory: '%kernel.project_dir%/migrations'

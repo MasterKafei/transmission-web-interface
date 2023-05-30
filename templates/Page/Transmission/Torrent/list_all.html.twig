@@ -1,0 +1,102 @@
+{% extends 'Layout/Authenticated/base.html.twig' %}
+
+{% set statusLabels = {
+    0: 'Arrêté',
+    1: 'En attente de vérification',
+    2: 'Vérification en cours',
+    3: 'En attente de téléchargement',
+    4: 'Téléchargement en cours',
+    5: 'En attente de partage',
+    6: 'Partage en cours'
+} %}
+
+{% block sub_title %}
+    Liste des torrents
+{% endblock sub_title %}
+
+{% block body %}
+    <div class="bg-gray-900 pt-1">
+        <table class="w-full whitespace-nowrap text-left">
+            <colgroup>
+                <col class="w-full sm:w-5/12">
+                <col class="lg:w-1/12">
+                <col class="lg:w-1/12">
+                <col class="lg:w-1/12">
+                <col class="lg:w-3/12">
+                <col class="lg:w-1/12">
+            </colgroup>
+            <thead class="border-b border-white/10 text-sm leading-6 text-white">
+            <tr>
+                <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Nom</th>
+                <th scope="col" class="py-2 pl-0 pr-4 font-semibold sm:pr-8 sm:text-left lg:pr-20">Statut</th>
+                <th scope="col" class="py-2 pl-0 pr-4 font-semibold sm:pr-8 sm:text-left lg:pr-20">Taille</th>
+                <th scope="col" class="py-2 pl-0 pr-4 font-semibold sm:pr-8 sm:text-left lg:pr-20">Uploadé</th>
+                <th scope="col" class="py-2 pl-0 pr-4 font-semibold sm:pr-8 sm:text-left lg:pr-20">Progession</th>
+                <th scope="col" class="py-2 pl-0 pr-4 font-semibold sm:pr-8 sm:text-left lg:pr-20">
+                    <div class="flex items-center">
+                        <span class="mr-4">Action</span>
+                        <a href="{{ path('app_transmission_torrent_uploading_upload') }}"
+                           class="font-medium material-icons">
+                                library_add
+                        </a>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+            {% for torrent in torrents %}
+                <tr class="{{ loop.index is even ? 'bg-gray-900' : 'bg-gray-800' }}">
+                    <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+                        <div class="flex items-center gap-x-4">
+                            <div class="truncate text-sm font-medium leading-6 text-white whitespace-normal">{{ torrent.name }}</div>
+                        </div>
+                    </td>
+                    <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
+                        <div class="flex items-center">
+                            {% if torrent.downloading %}
+                                <i class="material-icons mr-2 text-yellow-500">downloading</i>
+                            {% elseif torrent.seeding %}
+                                <i class="material-icons mr-2 text-green-500">upload</i>
+                            {% elseif torrent.stopped %}
+                                <i class="material-icons mr-2 text-orange-500">pause_circle</i>
+                            {% elseif torrent.checking %}
+                                <i class="material-icons mr-2 text-blue-500">refresh</i>
+                            {% endif %}
+                            <span class="align-middle">{{ statusLabels[torrent.status]|default('Inconnu') }}</span>
+                        </div>
+                    </td>
+                    <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">{{ torrent.size|formatSize }}</td>
+                    <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">{{ torrent.uploadedEver|formatSize }}</td>
+                    <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
+                        <div class="w-full bg-neutral-200 dark:bg-neutral-600">
+                            <div
+                                    class="bg-purple-500 p-0.5 text-center text-xs font-medium leading-none text-primary-100"
+                                    style="width: {{ torrent.checking ? 1 : torrent.percentDone }}%">
+                                {{ torrent.percentDone }}%
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
+                        <a href="{{ path('app_transmission_torrent_deleting_delete', {id: torrent.id}) }}">
+                            <i class="material-icons text-red-700">delete</i>
+                        </a>
+                        {% if torrent.stopped %}
+                            <a href="{{ path('app_transmission_torrent_playing_play', {id: torrent.id}) }}">
+                                <i class="material-icons text-green-500">play_arrow</i>
+                            </a>
+                        {% elseif torrent.finished %}
+                            <a href="{{ path('app_transmission_torrent_checking_check', {id: torrent.id}) }}">
+                                <i class="material-icons text-blue-500">restart_alt</i>
+                            </a>
+                        {% else %}
+                            <a href="{{ path('app_transmission_torrent_pausing_pause', {id: torrent.id}) }}">
+                                <i class="material-icons text-orange-500">pause</i>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock body %}
