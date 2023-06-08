@@ -32,13 +32,13 @@ class UploadingController extends AbstractController
                 $form->addError(new FormError('Vous devez obligatoirement renseigner un lien ou un fichier'));
             }
 
-            if (!$form->getErrors(true)) {
+            if ($form->getErrors(true)->count() === 0) {
                 if (null !== $uploadTorrentModel->getUrl()) {
                     $transmission->add($uploadTorrentModel->getUrl(), false, $uploadTorrentModel->getSavePath());
                 } else if (null !== $uploadTorrentModel->getFile()) {
                     $transmission->add(base64_encode($uploadTorrentModel->getFile()->getContent()), true, $uploadTorrentModel->getSavePath());
-                    return $this->redirectToRoute('app_transmission_torrent_listing_list_all');
                 }
+                return $this->redirectToRoute('app_transmission_torrent_listing_list_all');
             }
         }
 
